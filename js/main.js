@@ -7,7 +7,7 @@ function StampInfo() {
 
 var pagesCanvas = new Array();
 
-const url = 'NewDesign.pdf';
+const url = 'sample.pdf';
 
 var thePdf = null;
 var scale = 1;
