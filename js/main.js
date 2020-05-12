@@ -62,6 +62,23 @@ const renderPage = (num, canvas) => {
       fcanvas.add(rect);
       fcanvas.renderAll();
       pagesCanvas.push(fcanvas);
+
+      fcanvas.on('object:moving', function (e) {
+        var rectangle = e.target;
+        rectangle.setCoords();
+        // top-left  corner
+        if (rectangle.getBoundingRect().top < 0 || rectangle.getBoundingRect().left < 0) {
+            rectangle.top = Math.max(rectangle.top, rectangle.top - rectangle.getBoundingRect().top);
+            rectangle.left = Math.max(rectangle.left, rectangle.left - rectangle.getBoundingRect().left);
+        }
+
+        // bot-right corner
+        if (rectangle.getBoundingRect().top + rectangle.getBoundingRect().height > rectangle.canvas.height || rectangle.getBoundingRect().left + rectangle.getBoundingRect().width > rectangle.canvas.width) {
+            rectangle.top = Math.min(rectangle.top, rectangle.canvas.height - rectangle.getBoundingRect().height + rectangle.top - rectangle.getBoundingRect().top);
+            rectangle.left = Math.min(rectangle.left, rectangle.canvas.width - rectangle.getBoundingRect().width + rectangle.left - rectangle.getBoundingRect().left);
+        }
+        rectangle.hasBorders = true;
+    });
     });
   });
 };
