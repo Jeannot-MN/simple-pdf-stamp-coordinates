@@ -68,20 +68,53 @@ const renderPage = (num, canvas) => {
         rectangle.setCoords();
         // top-left  corner
         if (rectangle.getBoundingRect().top < 0 || rectangle.getBoundingRect().left < 0) {
-            rectangle.top = Math.max(rectangle.top, rectangle.top - rectangle.getBoundingRect().top);
-            rectangle.left = Math.max(rectangle.left, rectangle.left - rectangle.getBoundingRect().left);
+          rectangle.top = Math.max(rectangle.top, rectangle.top - rectangle.getBoundingRect().top);
+          rectangle.left = Math.max(rectangle.left, rectangle.left - rectangle.getBoundingRect().left);
         }
 
         // bot-right corner
         if (rectangle.getBoundingRect().top + rectangle.getBoundingRect().height > rectangle.canvas.height || rectangle.getBoundingRect().left + rectangle.getBoundingRect().width > rectangle.canvas.width) {
-            rectangle.top = Math.min(rectangle.top, rectangle.canvas.height - rectangle.getBoundingRect().height + rectangle.top - rectangle.getBoundingRect().top);
-            rectangle.left = Math.min(rectangle.left, rectangle.canvas.width - rectangle.getBoundingRect().width + rectangle.left - rectangle.getBoundingRect().left);
+          rectangle.top = Math.min(rectangle.top, rectangle.canvas.height - rectangle.getBoundingRect().height + rectangle.top - rectangle.getBoundingRect().top);
+          rectangle.left = Math.min(rectangle.left, rectangle.canvas.width - rectangle.getBoundingRect().width + rectangle.left - rectangle.getBoundingRect().left);
         }
         rectangle.hasBorders = true;
-    });
+        changeSelectedObjectColorOpacity(rectangle, fcanvas);
+
+        fcanvas.on('mouse:over', function (event) {
+          changeSelectedObjectColorOpacity(event.target, fcanvas);
+        });
+
+        fcanvas.on('mouse:out', function (event) {
+          revertObjectColorOpacity(event.target, fcanvas);
+        });
+      });
     });
   });
 };
+
+var selected_fill_color = '#334380';
+var selected_object_opacity = 0.3;
+
+function changeSelectedObjectColorOpacity(object, canvas) {
+  if (object == null) {
+    return;
+  }
+
+  object.set('fill', selected_fill_color);
+  object.set('opacity', selected_object_opacity);
+  canvas.renderAll();
+}
+
+
+function revertObjectColorOpacity(object, canvas) {
+  if (object == null) {
+    return;
+  }
+  object.set('fill', '#333333');
+  object.set('opacity', 0.4);
+  object.set('hasBorders', false);
+  canvas.renderAll();
+}
 
 var submit = function (e) {
   var response = new Array();
